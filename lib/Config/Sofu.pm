@@ -18,17 +18,16 @@ sub import {
 	$Config::Sofu::Sofu=Data::Sofu->new;
 	%Config::Sofu::CONFIG=$Config::Sofu::Sofu->read($file);
 	$Config::Sofu::Comment=$Config::Sofu::Sofu->comment if $Data::Sofu::VERSION ge "0.23";
-	Config::Sofu->export_to_level(1, '%CONFIG');
+	Config::Sofu->export_to_level(1, '%CONFIG',@_);
 }
 sub save {
 	my %CONF=%Config::Sofu::CONFIG;
 	%CONF={@_} if @_;
 	if ($Data::Sofu::VERSION ge "0.23") {
-		die (%$Config::Sofu::Comment);
-		#$Config::Sofu::Sofu->write($Config::Sofu::file,\%CONF,$Config::Sofu::Comment);
+		$Config::Sofu::Sofu->write($Config::Sofu::file,\%CONF,$Config::Sofu::Comment);
 	}
 	else {
-		#$Config::Sofu::Sofu->write($Config::Sofu::file,\%CONF);
+		$Config::Sofu::Sofu->write($Config::Sofu::file,\%CONF);
 	}
 }
 1;
