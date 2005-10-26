@@ -3,13 +3,16 @@ use Data::Sofu;
 use strict;
 use warnings;
 require Exporter;
-use vars qw/$VERSION @EXPORT @ISA %CONFIG/;
+use vars qw/$VERSION @EXPORT @ISA %CONFIG $file $Sofu $Comment/;
+use Carp;
 
-$VERSION="0.1";
+$VERSION="0.3";
 @ISA = qw(Exporter);
 @EXPORT=qw/%CONFIG/;
 %CONFIG=();
-
+$Sofu="";
+$file="";
+$Comment="";
 sub import {
 	my $class=shift;
 	my $file=shift;
@@ -21,8 +24,12 @@ sub import {
 	Config::Sofu->export_to_level(1, '%CONFIG',@_);
 }
 sub save {
-	my %CONF=%Config::Sofu::CONFIG;
-	%CONF={@_} if @_;
+	my $class=shift if @_ and $_[0] eq "Config::Sofu";
+	die "Arguments to save() must be empty or hash" if scalar @_ % 2;
+	die "No imports. Please \"use\" this module first" unless $Sofu;
+	#warn "Usage: Config::Sofu::save(%CONFIG)" and return 0 if not @_ or scalar @_ % 2;
+	my %CONF=%main::CONFIG;
+	%CONF=@_ if @_;
 	if ($Data::Sofu::VERSION ge "0.23") {
 		$Config::Sofu::Sofu->write($Config::Sofu::file,\%CONF,$Config::Sofu::Comment);
 	}
@@ -45,7 +52,12 @@ sub save {
 	
 Save the new configuration:
 
-	Config::Sofu::save(%NEWCONFIG)
+	$CONFIG{FOOBAR}="Bar times Foo";
+	Config::Sofu::save;
+	
+or
+
+	Config::Sofu::save(%CompletlyNewConfig)
 
 =head1 SYNTAX
 
