@@ -3,10 +3,10 @@ use Data::Sofu;
 use strict;
 use warnings;
 require Exporter;
-use vars qw/$VERSION @EXPORT @ISA %CONFIG $file $Sofu $Comment/;
+use vars qw/$VERSION @EXPORT @ISA %CONFIG $file $Sofu $Comment $wasbinary/;
 use Carp;
 
-$VERSION="0.3";
+$VERSION="0.5";
 @ISA = qw(Exporter);
 @EXPORT=qw/%CONFIG/;
 %CONFIG=();
@@ -22,7 +22,7 @@ sub import {
 	$Config::Sofu::Sofu=Data::Sofu->new;
 	%Config::Sofu::CONFIG=$Config::Sofu::Sofu->read($file);
 	$Config::Sofu::Comment=$Config::Sofu::Sofu->comment if $Data::Sofu::VERSION ge "0.23";
-	$Config::Sofu::wasbinary=$Config::Sofu::Sofu->{BINARY} if $Config::Sofu::Sofu->{BINARY}
+	$Config::Sofu::wasbinary=$Config::Sofu::Sofu->{BINARY} if $Config::Sofu::Sofu->{BINARY};
 	Config::Sofu->export_to_level(1, '%CONFIG',@_);
 }
 sub save {
